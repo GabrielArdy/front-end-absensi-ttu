@@ -19,7 +19,6 @@
 
 <script>
 export default {
-  name: 'HistoryCard'
+  name: 'ReportCard'
 }
-
 </script>

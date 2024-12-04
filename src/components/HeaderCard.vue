@@ -50,21 +50,3 @@ export default {
 }
 
 </script>
-
-<style lang="sass">
-.header-card
-  background-color: var(--q-color-primary)
-  position: relative
-  overflow: hidden
-  min-height: 200px
-
-.header-image
-  position: absolute
-  right: -50px
-  top: 100%
-  transform: translateY(-50%)
-  height: 240px
-  width: 240px
-  opacity: 0.1
-  z-index: 0
-</style>

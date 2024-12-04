@@ -12,7 +12,7 @@
           <q-icon name="eva-person-outline" />
         </template>
       </q-input>
-      <q-input color="text-primary" v-model="password" label="Password" class="q-mb-md" filled>
+      <q-input color="text-primary" type="password" v-model="password" label="Password" class="q-mb-md" filled>
         <template v-slot:prepend>
           <q-icon name="eva-lock-outline" />
         </template>

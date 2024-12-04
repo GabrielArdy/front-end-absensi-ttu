@@ -10,6 +10,8 @@
         <div class="col-12">
           <HistoryCard />
         </div>
+        <div class="col-12 q-mt-md">
+        </div>
       </div>
   </q-page>
 </template>
