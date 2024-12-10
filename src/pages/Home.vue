@@ -26,10 +26,6 @@ export default {
     HeaderCard,
     ActionButton,
     HistoryCard
-  },
-  data () {
-    return {
-    }
   }
 }
 </script>

@@ -47,7 +47,14 @@ module.exports = function (/* ctx */) {
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      env: {
+        AUTH_API: 'https://auth-service-40476736701.asia-southeast2.run.app'
+      },
+      vueRouterMode: 'history',
+      scopeHoisting: true,
+      showProgress: true,
+      gzip: false,
+      analyze: false, // available values: 'hash', 'history'
 
       // transpile: false,
 
@@ -77,7 +84,8 @@ module.exports = function (/* ctx */) {
     devServer: {
       https: false,
       port: 8080,
-      open: true // opens browser window automatically
+      open: true,
+      historyApiFallback: true // opens browser window automatically
     },
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
@@ -99,7 +107,7 @@ module.exports = function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: ['Dialog', 'Notify', 'LocalStorage', 'SessionStorage']
     },
 
     // animations: 'all', // --- includes all animations
@@ -114,13 +122,20 @@ module.exports = function (/* ctx */) {
     // https://v1.quasar.dev/quasar-cli/developing-pwa/configuring-pwa
     pwa: {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
-      workboxOptions: {}, // only for GenerateSW
+      workboxOptions: {
+        navigateFallback: '/index.html',
+        runtimeCaching: [{
+          urlPattern: /\//,
+          handler: 'StaleWhileRevalidate'
+        }]
+      }, // only for GenerateSW
       manifest: {
         name: 'Absensi App',
         short_name: 'Absensi App',
-        description: 'A Quasar Project',
+        description: 'Absensi App',
         display: 'standalone',
         orientation: 'portrait',
+        start_url: '/',
         background_color: '#ffffff',
         theme_color: '#027be3',
         icons: [

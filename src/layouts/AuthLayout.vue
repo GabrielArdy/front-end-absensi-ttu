@@ -9,11 +9,6 @@
 <script>
 
 export default {
-  name: 'AuthLayout',
-  data () {
-    return {
-
-    }
-  }
+  name: 'AuthLayout'
 }
 </script>
