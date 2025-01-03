@@ -100,13 +100,13 @@ export default {
           password: this.password
         })
 
-        // Periksa status code dan message untuk menentukan apakah login berhasil
+        // Periksa apakah status code dan message menunjukkan login berhasil
         if (response.data.code === 200 && response.data.message === 'Success') {
           // Login berhasil, simpan token dan redirect ke /home
           localStorage.setItem('authToken', response.data.data.token)
           this.$router.push('/home')
         } else {
-          // Login gagal, tampilkan notifikasi error
+          // Jika response mengandung error meskipun statusnya 200
           this.loginError = 'Invalid username or password'
           Notify.create({
             type: 'negative',
@@ -115,13 +115,35 @@ export default {
           })
         }
       } catch (error) {
-        console.error('Login failed:', error)
-        this.loginError = 'An error occurred. Please try again.'
-        Notify.create({
-          type: 'negative',
-          message: 'An error occurred. Please try again.',
-          icon: 'eva-alert-triangle-outline'
-        })
+        // Cek apakah error berasal dari response HTTP
+        if (error.response) {
+          // Jika ada error response (misalnya 401, 403, dsb)
+          console.error('Error response:', error.response)
+          this.loginError = 'Invalid username or password'
+          Notify.create({
+            type: 'negative',
+            message: 'Invalid username or password',
+            icon: 'eva-alert-triangle-outline'
+          })
+        } else if (error.request) {
+          // Jika tidak ada respons dari server
+          console.error('Error request:', error.request)
+          this.loginError = 'No response from server. Please try again later.'
+          Notify.create({
+            type: 'negative',
+            message: 'No response from server. Please try again later.',
+            icon: 'eva-alert-triangle-outline'
+          })
+        } else {
+          // Error lainnya
+          console.error('Unexpected error:', error.message)
+          this.loginError = 'An unexpected error occurred.'
+          Notify.create({
+            type: 'negative',
+            message: 'An unexpected error occurred.',
+            icon: 'eva-alert-triangle-outline'
+          })
+        }
       }
     }
   }

@@ -26,5 +26,23 @@ export default function (/* { store, ssrContext } */) {
     base: process.env.VUE_ROUTER_BASE
   })
 
+  Router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('authToken') // Mengambil token dari localStorage
+    const isLoginPage = to.path === '/' // Cek apakah pengguna mencoba mengakses halaman login
+
+    if (isLoginPage && token) {
+      // Jika pengguna mencoba mengakses halaman login dan sudah memiliki token,
+      // arahkan langsung ke halaman home
+      next('/home')
+    } else if (!isLoginPage && !token) {
+      // Jika pengguna mencoba mengakses halaman selain login, namun tidak ada token,
+      // arahkan mereka ke halaman login
+      next('/')
+    } else {
+      // Jika tidak ada masalah, lanjutkan ke halaman yang diminta
+      next()
+    }
+  })
+
   return Router
 }

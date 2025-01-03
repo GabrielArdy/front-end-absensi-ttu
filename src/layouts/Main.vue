@@ -4,7 +4,7 @@
       <q-toolbar class="bg-white text-primary">
         <q-toolbar-title>Absensi App</q-toolbar-title>
         <q-btn flat round icon="notifications" />
-        <q-btn flat round icon="logout" />
+        <q-btn flat round icon="logout" @click="logout" />
       </q-toolbar>
     </q-header>
     <q-footer elevated>
@@ -24,6 +24,12 @@
 
 <script>
 export default {
-  name: 'AppLayout'
+  name: 'AppLayout',
+  methods: {
+    logout () {
+      localStorage.removeItem('authToken') // Hapus token
+      this.$router.push('/') // Arahkan ke halaman login
+    }
+  }
 }
 </script>
