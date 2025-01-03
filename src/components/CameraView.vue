@@ -62,7 +62,6 @@ export default {
             this.handleScanSuccess(decodedText)
           },
           (errorMessage) => {
-            // Callback saat terjadi error
             console.warn('QR Code error:', errorMessage)
             this.scanStatus = 'QR code belum terdeteksi'
           }
