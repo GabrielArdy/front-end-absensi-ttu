@@ -10,9 +10,9 @@
     </div>
 
     <!-- Status deteksi QR Code -->
-    <div v-if="scanStatus" class="scan-status">
+    <!-- <div v-if="scanStatus" class="scan-status">
       <p>{{ scanStatus }}</p>
-    </div>
+    </div> -->
 
     <!-- Tombol Kontrol -->
     <div class="controls">
@@ -117,14 +117,11 @@ export default {
   height: 100vh
   display: flex
   flex-direction: column
-  align-items: center
-  justify-content: space-between
   background: black
-  overflow: hidden
 
 .camera-feed
+  flex: 1
   width: 100%
-  height: calc(100vh - 80px)
   object-fit: cover
 
 .qr-overlay
@@ -152,7 +149,6 @@ export default {
   font-size: 14px
 
 .controls
-  width: 100%
   height: 80px
   background: rgba(0, 0, 0, 0.8)
   display: flex
@@ -182,6 +178,8 @@ export default {
 .scan-status
   position: absolute
   bottom: 20px
+  left: 50%
+  transform: translateX(-50%)
   background-color: rgba(0, 0, 0, 0.7)
   color: white
   padding: 10px

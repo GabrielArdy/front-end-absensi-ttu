@@ -48,7 +48,8 @@ module.exports = function (/* ctx */) {
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       env: {
-        AUTH_API: 'https://auth-service-40476736701.asia-southeast2.run.app'
+        AUTH_API: 'https://auth-service-40476736701.asia-southeast2.run.app',
+        BACKEND_SERVICE: 'https://js-backend-40476736701.asia-southeast2.run.app'
       },
       vueRouterMode: 'history',
       scopeHoisting: true,
@@ -130,8 +131,8 @@ module.exports = function (/* ctx */) {
         }]
       }, // only for GenerateSW
       manifest: {
-        name: 'Absensi App',
-        short_name: 'Absensi App',
+        name: 'Sistem Informasi Guru Absensi dan Presensi (SIGAP)',
+        short_name: 'SIGAP',
         description: 'Absensi App',
         display: 'standalone',
         orientation: 'portrait',

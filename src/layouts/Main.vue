@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf">
     <q-header elevated>
       <q-toolbar class="bg-white text-primary">
-        <q-toolbar-title>Absensi App</q-toolbar-title>
+        <q-toolbar-title>SIGAP</q-toolbar-title>
         <q-btn flat round icon="notifications" />
         <q-btn flat round icon="logout" @click="logout" />
       </q-toolbar>

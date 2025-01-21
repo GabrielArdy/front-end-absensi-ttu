@@ -3,7 +3,7 @@
     <div class="column items-center q-pa-md" style="max-width: 400px; width: 100%">
 
       <q-img
-        src="~assets/img/Teaching-pana.svg"
+        src="~assets/img/icon.svg"
         spinner-color="white"
         style="height: 200px; max-width: 220px"
       />
@@ -19,7 +19,7 @@
         <q-input
           ref="usernameRef"
           color="text-primary"
-          v-model="username"
+          v-model="email"
           label="NIP"
           class="q-mb-md"
           filled
@@ -59,14 +59,14 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { Notify } from 'quasar'
+import { getClaims, loginWithCredentials } from 'src/api/auth'
 
 export default {
   name: 'LoginPage',
   data () {
     return {
-      username: '',
+      email: '',
       password: '',
       loading: false,
       loginError: null // for error message
@@ -89,21 +89,28 @@ export default {
       }
     },
     onReset () {
-      this.username = ''
+      this.email = ''
       this.password = ''
       this.loginError = null
     },
     async handleLogin () {
       try {
-        const response = await axios.post(`${process.env.AUTH_API}/api/auth/v1/login`, {
-          username: this.username,
+        const request = {
+          email: this.email,
           password: this.password
-        })
-
+        }
+        const response = await loginWithCredentials(request)
+        localStorage.setItem('token', response.data.token)
+        console.log('Login response:', response.data.token)
+        console.log('updated applied')
         // Periksa apakah status code dan message menunjukkan login berhasil
-        if (response.data.code === 200 && response.data.message === 'Success') {
+        if (response.data.code === 200) {
+          const token = localStorage.getItem('token')
+          const claimsData = await getClaims(token)
+          localStorage.setItem('teacherId', claimsData.data.teacherId)
+          localStorage.setItem('role', claimsData.data.role)
+          console.table(claimsData)
           // Login berhasil, simpan token dan redirect ke /home
-          localStorage.setItem('authToken', response.data.data.token)
           this.$router.push('/home')
         } else {
           // Jika response mengandung error meskipun statusnya 200

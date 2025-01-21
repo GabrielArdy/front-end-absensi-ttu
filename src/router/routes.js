@@ -22,6 +22,20 @@ const routes = [
       { path: '', component: () => import('pages/Camera.vue') }
     ]
   },
+  {
+    path: '/qr',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/QRPage.vue') }
+    ]
+  },
+  {
+    path: '/alter',
+    component: () => import('layouts/Frame.vue'),
+    children: [
+      { path: '', component: () => import('pages/Alter.vue') }
+    ]
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

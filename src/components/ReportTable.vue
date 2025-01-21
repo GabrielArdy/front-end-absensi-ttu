@@ -1,53 +1,97 @@
 <template>
-    <div class="scrollable-container">
-      <q-table
-        flat
-        :data="rows"
-        :columns="columns"
-        row-key="tanggal"
-        class="full-width"
-      />
-    </div>
-  </template>
+  <div class="scrollable-container">
+    <q-table
+      flat
+      :data="formattedData"
+      :columns="columns"
+      row-key="tanggal"
+      :loading="loading"
+      class="full-width"
+    />
+  </div>
+</template>
 
 <script>
+import { computed } from 'vue'
+
 export default {
-  name: 'ScrollableTable',
-  data () {
+  name: 'ReportTable',
+  props: {
+    attendanceData: {
+      type: Array,
+      default: () => []
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup (props) {
+    const columns = [
+      {
+        name: 'tanggal',
+        label: 'Tanggal',
+        align: 'left',
+        field: 'tanggal',
+        format: val => new Intl.DateTimeFormat('id-ID', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }).format(new Date(val))
+      },
+      {
+        name: 'jamMasuk',
+        label: 'Jam Masuk',
+        align: 'center',
+        field: 'jamMasuk',
+        format: val => new Intl.DateTimeFormat('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).format(new Date(val))
+      },
+      {
+        name: 'jamKeluar',
+        label: 'Jam Keluar',
+        align: 'center',
+        field: 'jamKeluar',
+        format: val => new Intl.DateTimeFormat('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).format(new Date(val))
+      }
+    ]
+
+    const formattedData = computed(() => {
+      return props.attendanceData
+        .map(item => ({
+          tanggal: item.date,
+          jamMasuk: item.checkIn,
+          jamKeluar: item.checkOut
+        }))
+        .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal))
+    })
+
     return {
-      columns: [
-        { name: 'tanggal', label: 'Tanggal', align: 'left', field: 'tanggal' },
-        { name: 'jamMasuk', label: 'Jam Masuk', align: 'center', field: 'jamMasuk' },
-        { name: 'jamKeluar', label: 'Jam Keluar', align: 'center', field: 'jamKeluar' }
-      ],
-      rows: [
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' },
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' },
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' },
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' },
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' },
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' },
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' },
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' },
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' },
-        { tanggal: '01-01-1997', jamMasuk: '00:00:00', jamKeluar: '23:59:59' }
-      ]
+      columns,
+      formattedData
     }
   }
 }
 </script>
 
-  <style lang="sass">
-  .scrollable-container
-    max-height: 300px
-    overflow-y: auto
-    border: 1px solid #e0e0e0
-    border-radius: 4px
+<style>
+.scrollable-container {
+  max-height: 400px;
+  overflow-y: auto;
+}
 
-  .q-table thead tr th
-    position: sticky
-    top: 0
-    background: white
-    z-index: 1
-
-  </style>
+.q-table thead tr th {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+</style>
