@@ -118,12 +118,20 @@ export default {
           this.selectedPeriode = this.periodeOptions[0]
         }
 
+        const payload = {
+          teacherId,
+          month: this.selectedPeriode.value.month,
+          year: this.selectedPeriode.value.year
+        }
+
+        console.log('Selected periode:', payload)
+
         const response = await GetMonthlyReport(
           this.token,
-          teacherId,
-          this.selectedPeriode.value.month,
-          this.selectedPeriode.value.year
+          payload
         )
+
+        console.log('Monthly report:', response.data)
 
         if (response.data.code === 200) {
           this.monthlyData = response.data.data

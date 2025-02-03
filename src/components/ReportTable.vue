@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { h, computed } from 'vue'
 
 export default {
   name: 'ReportTable',
@@ -27,6 +27,18 @@ export default {
     }
   },
   setup (props) {
+    const formatTime = (val) => {
+      if (!val || val === '-') {
+        return h('div', {
+          style: 'color: #FF0000;' // or 'color: var(--q-negative)'
+        }, 'Tidak Tercatat')
+      }
+      return new Intl.DateTimeFormat('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }).format(new Date(val))
+    }
     const columns = [
       {
         name: 'tanggal',
@@ -45,22 +57,14 @@ export default {
         label: 'Jam Masuk',
         align: 'center',
         field: 'jamMasuk',
-        format: val => new Intl.DateTimeFormat('id-ID', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }).format(new Date(val))
+        format: formatTime
       },
       {
         name: 'jamKeluar',
         label: 'Jam Keluar',
         align: 'center',
         field: 'jamKeluar',
-        format: val => new Intl.DateTimeFormat('id-ID', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }).format(new Date(val))
+        format: formatTime
       }
     ]
 
@@ -68,8 +72,8 @@ export default {
       return props.attendanceData
         .map(item => ({
           tanggal: item.date,
-          jamMasuk: item.checkIn,
-          jamKeluar: item.checkOut
+          jamMasuk: item.checkIn || '-',
+          jamKeluar: item.checkOut || '-'
         }))
         .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal))
     })

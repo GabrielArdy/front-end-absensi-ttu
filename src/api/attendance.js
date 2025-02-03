@@ -1,7 +1,49 @@
 import api from './conf'
-export const GetMonthlyReport = async (token, teacherId, month, year) => {
+export const GetMonthlyReport = async (token, request) => {
   try {
-    const response = await api.post('/api/attendance/monthly', { teacherId, month, year }, {
+    const response = await api.post('/api/report/monthly', request, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response
+  } catch (error) {
+    throw error.response?.data || error
+  }
+}
+
+export const RecordCheckInTime = async (token, request) => {
+  try {
+    const response = await api.post('/api/attendance/checkin', request, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response
+  } catch (error) {
+    throw error.response?.data || error
+  }
+}
+
+export const RecordCheckOutTime = async (token, request) => {
+  try {
+    const response = await api.post('/api/attendance/checkout', request, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response
+  } catch (error) {
+    throw error.response?.data || error
+  }
+}
+
+export const GetUserData = async (token, teacherId) => {
+  try {
+    const response = await api.get(`/api/users/${teacherId}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`

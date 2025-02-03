@@ -4,7 +4,7 @@
       <div class="profile-header">
         <q-avatar size="120px" class="profile-avatar">
           <q-img
-            :src="profile.image"
+            :src="profile.photoUrl || 'https://via.placeholder.com/120'"
             spinner-color="primary"
             spinner-size="30px"
           />
@@ -18,7 +18,7 @@
               <q-icon name="person" color="primary" />
             </q-item-section>
             <q-item-section>
-              <q-item-label class="text-weight-bold">{{ profile.name }}</q-item-label>
+              <q-item-label class="text-weight-bold">{{ profile.displayName }}</q-item-label>
               <q-item-label caption>Nama Lengkap</q-item-label>
             </q-item-section>
           </q-item>
@@ -30,7 +30,7 @@
               <q-icon name="badge" color="primary" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>{{ profile.nip }}</q-item-label>
+              <q-item-label>{{ profile.teacherId }}</q-item-label>
               <q-item-label caption>Nomor Induk Pegawai</q-item-label>
             </q-item-section>
           </q-item>
@@ -42,7 +42,7 @@
               <q-icon name="work" color="primary" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>{{ profile.position }}</q-item-label>
+              <q-item-label>{{ profile.grade }}</q-item-label>
               <q-item-label caption>Jabatan</q-item-label>
             </q-item-section>
           </q-item>
@@ -65,16 +65,49 @@
 </template>
 
 <script>
+import { GetUserData } from 'src/api/attendance'
+import { onMounted, ref } from 'vue'
+
 export default {
-  data () {
-    return {
-      profile: {
-        name: 'John Doe',
-        nip: '19220909 2000 34 5',
-        position: 'Penata Muda/III B',
-        email: 'john.doe@email.com',
-        image: 'https://via.placeholder.com/150'
+  name: 'Profile',
+  setup () {
+    const profile = ref({
+      displayName: '',
+      email: '',
+      photoUrl: '',
+      teacherId: '',
+      grade: ''
+    })
+    const token = localStorage.getItem('token')
+    const teacherId = localStorage.getItem('teacherId')
+
+    const fetchProfile = async () => {
+      try {
+        const response = await GetUserData(token, teacherId)
+        console.log(response)
+        if (response.data.code === 200) {
+          // Map the response data to the profile object
+          profile.value = {
+            displayName: response.data.data.displayName,
+            email: response.data.data.email,
+            photoUrl: response.data.data.PhotoUrl,
+            teacherId: response.data.data.teacherId,
+            grade: response.data.data.grade
+          }
+        } else {
+          throw new Error(response.data.message || 'Failed to fetch data')
+        }
+      } catch (err) {
+        console.error(err)
       }
+    }
+
+    onMounted(() => {
+      fetchProfile()
+    })
+
+    return {
+      profile
     }
   }
 }
@@ -82,7 +115,7 @@ export default {
 
 <style lang="scss" scoped>
 .profile-page {
-  background-color: #f4f6f9;
+  background-color: $secondary;
 }
 
 .profile-container {

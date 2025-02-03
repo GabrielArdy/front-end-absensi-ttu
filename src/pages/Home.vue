@@ -1,5 +1,27 @@
 <template>
   <q-page class="q-pa-md">
+    <q-banner
+      v-if="showInstallBanner"
+      class="bg-primary text-white q-mb-md"
+      rounded
+    >
+      <template v-slot:avatar>
+        <q-icon name="eva-download-outline" />
+      </template>
+      Instal aplikasi untuk pengalaman yang lebih baik
+      <template v-slot:action>
+        <q-btn
+          flat
+          label="Instal"
+          @click="installPWA"
+        />
+        <q-btn
+          flat
+          label="Tutup"
+          @click="showInstallBanner = false"
+        />
+      </template>
+    </q-banner>
     <div class="row q-col-gutter-md">
       <div class="col-12">
         <HeaderCard
@@ -40,6 +62,8 @@ export default {
     HistoryCard
   },
   setup () {
+    const showInstallBanner = ref(false)
+    let deferredPrompt = null
     const token = localStorage.getItem('token')
     const loading = ref(false)
     const teacherData = ref(null)
@@ -73,15 +97,55 @@ export default {
     }
 
     onMounted(() => {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing prompt
+        e.preventDefault()
+        // Stash the event so it can be triggered later
+        deferredPrompt = e
+        // Show the banner
+        showInstallBanner.value = true
+      })
+
+      // Check if PWA is already installed
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        showInstallBanner.value = false
+      }
       fetchDashboardData()
     })
+    const installPWA = async () => {
+      if (!deferredPrompt) return
+
+      // Show the install prompt
+      deferredPrompt.prompt()
+
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice
+      // Hide the banner regardless of outcome
+      showInstallBanner.value = false
+      // Notify based on outcome
+      if (outcome === 'accepted') {
+        this.$q.notify({
+          type: 'positive',
+          message: 'Terima kasih telah menginstal aplikasi'
+        })
+      }
+      deferredPrompt = null
+    }
 
     return {
       loading,
       teacherData,
       error,
-      formattedDate
+      formattedDate,
+      showInstallBanner,
+      installPWA
     }
   }
 }
 </script>
+
+<style scoped>
+.q-banner {
+  border-radius: 8px;
+}
+</style>

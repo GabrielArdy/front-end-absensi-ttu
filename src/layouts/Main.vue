@@ -27,7 +27,8 @@ export default {
   name: 'AppLayout',
   methods: {
     logout () {
-      localStorage.removeItem('authToken') // Hapus token
+      // revome all local storage
+      localStorage.clear()
       this.$router.push('/') // Arahkan ke halaman login
     }
   }

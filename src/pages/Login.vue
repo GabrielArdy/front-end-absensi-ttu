@@ -7,7 +7,7 @@
         spinner-color="white"
         style="height: 200px; max-width: 220px"
       />
-      <h5 class="text-primary text-bold">Login Page</h5>
+      <h5 class="text-primary text-bold">Selamat Datang</h5>
 
       <!-- Login Form -->
       <q-form
@@ -20,35 +20,44 @@
           ref="usernameRef"
           color="text-primary"
           v-model="email"
-          label="NIP"
+          label="Email"
           class="q-mb-md"
           filled
-          :rules="[val => !!val || 'NIP is required']"
+          :rules="[val => !!val || 'Email Tidak Boleh Kosong']"
         >
           <template v-slot:prepend>
-            <q-icon name="eva-person-outline" />
+            <q-icon name="eva-email-outline" />
           </template>
         </q-input>
 
         <q-input
           ref="passwordRef"
           color="text-primary"
-          type="password"
+          :type="isPwdVisible ? 'text' : 'password'"
           v-model="password"
           label="Password"
           class="q-mb-md"
           filled
-          :rules="[val => !!val || 'Password is required']"
+          :rules="[val => !!val || 'Password Tidak Boleh Kosong']"
         >
-          <template v-slot:prepend>
-            <q-icon name="eva-lock-outline" />
-          </template>
+        <template v-slot:prepend>
+      <q-icon name="eva-lock-outline" />
+    </template>
+    <template v-slot:append>
+      <q-icon
+        :name="isPwdVisible ? 'eva-eye-off-outline' : 'eva-eye-outline'"
+        class="cursor-pointer"
+        @click="togglePassword"
+        role="button"
+        aria-label="Toggle password visibility"
+      />
+    </template>
         </q-input>
 
         <q-btn
           type="submit"
           color="primary"
-          label="Login"
+          label="MASUK"
           class="text-white q-mb-md"
           :loading="loading"
           :style="{ width: '100%', height: '56px' }"
@@ -69,7 +78,8 @@ export default {
       email: '',
       password: '',
       loading: false,
-      loginError: null // for error message
+      loginError: null,
+      isPwdVisible: false
     }
   },
   methods: {
@@ -101,8 +111,6 @@ export default {
         }
         const response = await loginWithCredentials(request)
         localStorage.setItem('token', response.data.token)
-        console.log('Login response:', response.data.token)
-        console.log('updated applied')
         // Periksa apakah status code dan message menunjukkan login berhasil
         if (response.data.code === 200) {
           const token = localStorage.getItem('token')
@@ -123,35 +131,30 @@ export default {
         }
       } catch (error) {
         // Cek apakah error berasal dari response HTTP
-        if (error.response) {
-          // Jika ada error response (misalnya 401, 403, dsb)
-          console.error('Error response:', error.response)
-          this.loginError = 'Invalid username or password'
-          Notify.create({
-            type: 'negative',
-            message: 'Invalid username or password',
-            icon: 'eva-alert-triangle-outline'
-          })
-        } else if (error.request) {
-          // Jika tidak ada respons dari server
-          console.error('Error request:', error.request)
-          this.loginError = 'No response from server. Please try again later.'
-          Notify.create({
-            type: 'negative',
-            message: 'No response from server. Please try again later.',
-            icon: 'eva-alert-triangle-outline'
-          })
-        } else {
-          // Error lainnya
-          console.error('Unexpected error:', error.message)
-          this.loginError = 'An unexpected error occurred.'
-          Notify.create({
-            type: 'negative',
-            message: 'An unexpected error occurred.',
-            icon: 'eva-alert-triangle-outline'
-          })
-        }
+        this.handleError(error)
       }
+    },
+    togglePassword () {
+      this.isPwdVisible = !this.isPwdVisible
+    },
+    handleError (error) {
+      let errorMessage = 'Gagal masuk ke aplikasi'
+      switch (error.code) {
+        case 500:
+          switch (error.message) {
+            case 'Firebase: Error (auth/invalid-credential).':
+              errorMessage = 'Email atau password salah'
+              break
+            default:
+              errorMessage = 'Terjadi kesalahan saat masuk'
+              break
+          }
+      }
+      Notify.create({
+        type: 'negative',
+        message: errorMessage,
+        icon: 'eva-alert-triangle-outline'
+      })
     }
   }
 }

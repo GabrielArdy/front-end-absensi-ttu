@@ -19,7 +19,16 @@ const routes = [
     path: '/camera',
     component: () => import('layouts/Frame.vue'),
     children: [
-      { path: '', component: () => import('pages/Camera.vue') }
+      {
+        path: '/checkin',
+        component: () => import('pages/CheckIn.vue'),
+        name: 'PageCheckIn'
+      },
+      {
+        path: '/checkout',
+        component: () => import('pages/CheckOut.vue'),
+        name: 'PageCheckOut'
+      }
     ]
   },
   {
