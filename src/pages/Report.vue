@@ -70,7 +70,7 @@
 <script>
 
 import ProfileCard from 'components/ProfileCard.vue'
-import { GetMonthlyReport } from 'src/api/attendance'
+import { DownloadExcelReport, GetMonthlyReport } from 'src/api/attendance'
 import { getDashboardUser } from 'src/api/dashboard'
 import ReportTable from 'src/components/ReportTable.vue'
 
@@ -114,8 +114,14 @@ export default {
         this.loading = true
         const teacherId = localStorage.getItem('teacherId')
 
+        // Pastikan selectedPeriode terisi
         if (!this.selectedPeriode) {
-          this.selectedPeriode = this.periodeOptions[0]
+          this.selectedPeriode = this.periodeOptions[0] // Set default jika belum terisi
+        }
+
+        // Cek apakah selectedPeriode memiliki value
+        if (!this.selectedPeriode.value) {
+          throw new Error('Periode tidak valid')
         }
 
         const payload = {
@@ -126,10 +132,7 @@ export default {
 
         console.log('Selected periode:', payload)
 
-        const response = await GetMonthlyReport(
-          this.token,
-          payload
-        )
+        const response = await GetMonthlyReport(this.token, payload)
 
         console.log('Monthly report:', response.data)
 
@@ -145,7 +148,7 @@ export default {
         console.error('Error fetching report:', error)
         this.$q.notify({
           type: 'negative',
-          message: 'Gagal mengambil laporan'
+          message: 'Gagal mengambil laporan: ' + error.message
         })
       } finally {
         this.loading = false
@@ -172,11 +175,38 @@ export default {
         this.loading = false
       }
     },
-    downloadReport () {
-      this.$q.notify({
-        type: 'info',
-        message: 'Fitur download sedang dikembangkan'
-      })
+    async downloadReport () {
+      const flag = localStorage.getItem('flag')
+      try {
+        // Mengambil file Excel dari server
+        const response = await DownloadExcelReport(this.selectedPeriode.value.month, this.selectedPeriode.value.year, flag)
+
+        // Pastikan response berisi data file
+        if (response && response.data) {
+          // Membuat blob dari data yang diterima
+          const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+          const url = window.URL.createObjectURL(blob)
+
+          // Membuat elemen link untuk mengunduh file
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute('download', 'report.xlsx') // Nama file yang akan diunduh
+          document.body.appendChild(link)
+          link.click()
+
+          // Menghapus elemen link setelah unduhan
+          link.parentNode.removeChild(link)
+          window.URL.revokeObjectURL(url) // Menghapus URL object
+        } else {
+          throw new Error('File tidak ditemukan')
+        }
+      } catch (error) {
+        console.error('Error downloading report:', error)
+        this.$q.notify({
+          type: 'negative',
+          message: 'Gagal mengunduh laporan: ' + error.message
+        })
+      }
     }
   },
   mounted () {

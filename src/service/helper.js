@@ -5,7 +5,7 @@ export const GetCurrentPosition = async () => {
     }
 
     const opt = {
-      enableHighAccuracy: false,
+      enableHighAccuracy: true,
       timeout: 3000,
       maximumAge: 0
     }
@@ -39,7 +39,8 @@ export const GetCurrentTime = () => {
   const options = {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'
+    day: '2-digit',
+    timeZone: 'Asia/Makassar'
   }
   // Get date in YYYY-MM-DD format
   const date = now.toLocaleDateString('en-CA', options)

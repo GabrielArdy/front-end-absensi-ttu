@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import routes from './routes'
+import axios from 'axios'
+import { Notify } from 'quasar'
 
 Vue.use(VueRouter)
 
@@ -22,9 +24,30 @@ export default function (/* { store, ssrContext } */) {
     // Leave these as they are and change in quasar.conf.js instead!
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
+
     mode: process.env.VUE_ROUTER_MODE,
     base: process.env.VUE_ROUTER_BASE
   })
+
+  axios.interceptors.response.use(
+    response => response,
+    error => {
+      console.log(`Response: ${error}`)
+      if (error && error.code === 401) {
+        // Show notification
+        Notify.create({
+          type: 'negative',
+          message: 'Session Habis Silahkan Login ulang',
+          position: 'top',
+          timeout: 2000
+        })
+        // Navigate to home page
+        localStorage.clear()
+        Router.push('/')
+      }
+      return Promise.reject(error)
+    }
+  )
 
   return Router
 }

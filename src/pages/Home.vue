@@ -81,6 +81,7 @@ export default {
 
         if (response.data.code === 200) {
           teacherData.value = response.data.data
+          localStorage.setItem('flag', teacherData.value.flag)
           console.table(teacherData.value.date)
         } else {
           throw new Error(response.data.message || 'Failed to fetch data')

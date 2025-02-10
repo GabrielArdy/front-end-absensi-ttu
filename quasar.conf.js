@@ -48,8 +48,8 @@ module.exports = function (/* ctx */) {
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       env: {
-        BACKEND_SERVICE: 'http://localhost:8081'
-        // BACKEND_SERVICE: 'https://js-backend-40476736701.asia-southeast2.run.app'
+        // BACKEND_SERVICE: 'http://localhost:8081'
+        BACKEND_SERVICE: 'https://js-backend-40476736701.asia-southeast2.run.app'
       },
       vueRouterMode: 'history',
       scopeHoisting: true,
@@ -117,7 +117,7 @@ module.exports = function (/* ctx */) {
 
     // https://v1.quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
-      pwa: false
+      pwa: true
     },
 
     // https://v1.quasar.dev/quasar-cli/developing-pwa/configuring-pwa

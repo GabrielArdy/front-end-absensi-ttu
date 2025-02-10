@@ -54,3 +54,12 @@ export const GetUserData = async (token, teacherId) => {
     throw error.response?.data || error
   }
 }
+
+export const DownloadExcelReport = async (month, year, flag) => {
+  try {
+    const response = api.get(`/api/report/export?month=${month}&year=${year}&flag=${flag}`, { responseType: 'blob' })
+    return response
+  } catch (error) {
+    throw error.response?.data || error
+  }
+}
