@@ -565,21 +565,5 @@ export const GetUserData = async (token, teacherId) => {
   }
 }
 
-```
 
-dan contoh responsenya
-```
-{
-    "code": 200,
-    "message": "User data retrieved successfully",
-    "data": {
-        "displayName": "MERRY CHRYST NH. BAKUMAWA, S.Kom",
-        "email": "merrybakumawa01@guru.smp.belajar.id",
-        "position": "Guru",
-        "PhotoUrl": "https://storage.googleapis.com/sigap-storage/default%2F%2Fuser.png",
-        "teacherId": "197911302009032001",
-        "grade": "Golongan IV/a - Pembina"
-    }
-}
-```
 
